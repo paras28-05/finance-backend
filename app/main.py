@@ -9,12 +9,13 @@ from app.config import settings
 from app.database import Base, engine
 from app.limiter import limiter
 from app.routers import auth, users, records, dashboard
-
+from contextlib import asynccontextmanager
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
+    lifespan=lifespan, 
     description="""
 ## Finance Data Processing & Access Control Backend
 
@@ -79,3 +80,24 @@ app.include_router(dashboard.router)
 def health_check():
     """Returns API status and version. No authentication required."""
     return {"status": "ok", "version": settings.app_version, "app": settings.app_name}
+
+# ─── Auto-SEED ─────────────────────────────────────────────────────────────────────
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: auto-seed if database is empty
+    from app.database import SessionLocal
+    from app.models import User
+    db = SessionLocal()
+    try:
+        if db.query(User).count() == 0:
+            db.close()
+            import subprocess
+            subprocess.run(["python", "seed.py"], check=True)
+        else:
+            db.close()
+    except Exception as e:
+        db.close()
+        print(f"Auto-seed skipped: {e}")
+    
+    yield 
