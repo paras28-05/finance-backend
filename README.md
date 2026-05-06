@@ -1,6 +1,6 @@
 # Finance Data Processing & Access Control Backend
 
-> Built for the **Zorvyn FinTech Backend Developer Intern** assignment.
+
 
 A production-structured REST API backend for a finance dashboard system featuring JWT authentication, role-based access control (RBAC), full financial record management, and aggregated analytics.
 
