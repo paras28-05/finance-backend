@@ -334,6 +334,4 @@ Tests run against a **separate** `test_finance.db` — your production `finance.
 
 ---
 
-## Assignment Coverage
 
-✅ All requirements from the Zorvyn FinTech Backend Developer Intern assignment are fully implemented and tested.
